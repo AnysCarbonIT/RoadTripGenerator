@@ -1,0 +1,29 @@
+name: roadtripgenerator
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: roadtrip_dev
+      POSTGRES_USER: roadtrip
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD in .env}
+
+    # Accessible uniquement depuis cette machine ; 5433 évite le port PostgreSQL standard.
+    ports:
+      - "127.0.0.1:5433:5432"
+
+    # Les données restent présentes après docker compose down (sans --volumes).
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roadtrip -d roadtrip_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres_data:

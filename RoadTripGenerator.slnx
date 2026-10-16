@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="RoadTripGenerator.Application/RoadTripGenerator.Application.csproj" Id="05af0b6b-3282-4e21-945e-9bba993deb83" />
+  <Project Path="RoadTripGenerator.Domain/RoadTripGenerator.Domain.csproj" Id="729c1ad0-12b9-4f43-986e-b916998cca8a" />
+  <Project Path="RoadTripGenerator.Infrastructure/RoadTripGenerator.Infrastructure.csproj" Id="e4dd1290-9549-47ed-b45f-a8f07855ad7e" />
+  <Project Path="RoadTripGenerator.Api/RoadTripGenerator.Api.csproj" />
+</Solution>

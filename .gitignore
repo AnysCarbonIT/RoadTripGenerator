@@ -1,0 +1,11 @@
+# Secrets locaux : seul .env.example doit être versionné.
+.env
+.env.*
+!.env.example
+
+# Fichiers générés par .NET et Visual Studio.
+**/bin/
+**/obj/
+.vs/
+*.user
+*.suo
