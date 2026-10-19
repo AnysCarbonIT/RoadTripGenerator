@@ -19,7 +19,9 @@ namespace RoadTripGenerator.Infrastructure.Persistence
         typeof(RoadTripGeneratorDbContext).Assembly);
 }
         public DbSet<Country> Countries { get; set; } = null!;
-        //public DbSet<Roadtrip> Roadtrips { get; set; }
+        public DbSet<RoadTrip> Roadtrips { get; set; } = null!;
+
+        public DbSet<Step> Steps { get; set; } = null!;
     }
 
     }

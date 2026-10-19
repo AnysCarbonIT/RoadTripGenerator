@@ -51,6 +51,79 @@ namespace RoadTripGenerator.Infrastructure.Migrations
 
                     b.ToTable("Countries", (string)null);
                 });
+
+            modelBuilder.Entity("RoadTripGenerator.Domain.Models.RoadTrip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
+
+                    b.ToTable("RoadTrips", (string)null);
+                });
+
+            modelBuilder.Entity("RoadTripGenerator.Domain.Models.Step", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CountryCca3")
+                        .IsRequired()
+                        .HasMaxLength(3)
+                        .HasColumnType("character varying(3)");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoadTripId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryCca3");
+
+                    b.HasIndex("RoadTripId", "Order")
+                        .IsUnique();
+
+                    b.ToTable("Steps", (string)null);
+                });
+
+            modelBuilder.Entity("RoadTripGenerator.Domain.Models.Step", b =>
+                {
+                    b.HasOne("RoadTripGenerator.Domain.Models.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryCca3")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RoadTripGenerator.Domain.Models.RoadTrip", "Roadtrip")
+                        .WithMany("Steps")
+                        .HasForeignKey("RoadTripId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Roadtrip");
+                });
+
+            modelBuilder.Entity("RoadTripGenerator.Domain.Models.RoadTrip", b =>
+                {
+                    b.Navigation("Steps");
+                });
 #pragma warning restore 612, 618
         }
     }
