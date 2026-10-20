@@ -40,10 +40,10 @@ namespace RoadTripGenerator.Infrastructure.ExternalUpload
                 Region = restCountryDto.Region,
                 Flag = restCountryDto.Flag.Emoji,
                 Population = restCountryDto.Population,
-                CapitalCities = restCountryDto.Capitals
+                CapitalCities = restCountryDto.Capitals?
                     .Where(capital => !string.IsNullOrWhiteSpace(capital.Name))
                     .Select(capital => capital.Name!)
-                    .ToList() // ici je change la liste de RestCountryCapitalDto en une liste de string pour conveniur a country
+                    .ToList() ?? new List<string>() // ici je change la liste de RestCountryCapitalDto en une liste de string pour conveniur a country
             };
         }
     }

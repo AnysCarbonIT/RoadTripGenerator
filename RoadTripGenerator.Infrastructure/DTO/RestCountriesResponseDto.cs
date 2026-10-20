@@ -2,13 +2,13 @@
 
 namespace RoadTripGenerator.Infrastructure.DTO
 {
-    public class RestCountriesResponseDto
+    public record RestCountriesResponseDto
     {
         [JsonPropertyName("data")]
         public RestCountriesDataDto? Data { get; set; }
     }
 
-    public class RestCountriesDataDto
+    public record RestCountriesDataDto
     {
         [JsonPropertyName("objects")]
         public List<RestCountryDto> Objects { get; set; } = new List<RestCountryDto>();
@@ -17,9 +17,9 @@ namespace RoadTripGenerator.Infrastructure.DTO
         public RestCountriesMetaDto? Meta { get; set; }
     }
 
-    public class RestCountriesMetaDto
+    public record RestCountriesMetaDto
     {
         [JsonPropertyName("more")]
-        public bool More { get; set; }
+        public bool? More { get; set; }
     }
 }

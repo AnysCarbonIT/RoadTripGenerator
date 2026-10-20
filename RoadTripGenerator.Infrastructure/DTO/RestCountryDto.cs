@@ -2,7 +2,7 @@
 
 namespace RoadTripGenerator.Infrastructure.DTO
 {
-    public class RestCountryDto
+    public record RestCountryDto
     {
         [JsonPropertyName("names")]
         public RestCountryNameDto? Names { get; set; }
@@ -24,25 +24,25 @@ namespace RoadTripGenerator.Infrastructure.DTO
         public RestCountryFlagDto? Flag { get; set; }
     }
 
-    public class RestCountryNameDto
+    public record RestCountryNameDto
     {
         [JsonPropertyName("common")]
         public string? Common { get; set; }
     }
 
-    public class RestCountryCodesDto
+    public record RestCountryCodesDto
     {
         [JsonPropertyName("alpha_3")]
         public string? Alpha3 { get; set; }
     }
 
-    public class RestCountryCapitalDto
+    public record RestCountryCapitalDto
     {
         [JsonPropertyName("name")]
         public string? Name { get; set; }
     }
 
-    public class RestCountryFlagDto
+    public record RestCountryFlagDto
     {
         [JsonPropertyName("emoji")]
         public string? Emoji { get; set; }

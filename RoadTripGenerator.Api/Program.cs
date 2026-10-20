@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Infrastructure.ExternalUpload;
 using RoadTripGenerator.Infrastructure.Persistence;
+using RoadTripGenerator.Infrastructure.Persistence.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +21,14 @@ builder.Services.AddDbContext<RoadTripGeneratorDbContext>(
 string apiKey = builder.Configuration["RestCountries:ApiKey"] ?? throw new InvalidOperationException("Clé API REST Countries manquante."); ; 
 builder.Services.AddHttpClient<ICountryApiClient, RestCountryClient>(client => 
 {
-    client.BaseAddress = new Uri("https://api.restcountries.com/");
+    client.BaseAddress = new Uri("https://api.restcountries.com/"); // en dur ici 
     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 });
 
 
+
+builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<CountryInitializationService>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
@@ -38,5 +42,13 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var initializer = scope.ServiceProvider
+        .GetRequiredService<CountryInitializationService>();
+
+    await initializer.InitializeCountriesAsync(CancellationToken.None);
+}
 
 app.Run();

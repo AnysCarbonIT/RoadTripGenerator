@@ -11,9 +11,9 @@ namespace RoadTripGenerator.Domain.Models
         public RoadTrip Roadtrip { get; set; } = null!;
 
         public required string CountryCca3 { get; set; }
-        public Country Country { get; set; } = null!;
+        public Country Country { get; private set; } = null!;
 
-        public  int Order { get; set; }
+        public  int Order { get; private set; }
 
 
     }
