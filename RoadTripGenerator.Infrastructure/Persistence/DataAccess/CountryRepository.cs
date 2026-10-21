@@ -15,6 +15,16 @@ namespace RoadTripGenerator.Infrastructure.Persistence.DataAccess
             _dbContext = dbContext;
             
         }
+        public async Task<IReadOnlyList<Country>> GetCountriesAsync(int page, int pageSize, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Countries
+                .AsNoTracking()
+                .OrderBy(country => country.Cca3)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<bool> HasCountriesAsync(CancellationToken cancellationToken)
         {
             return await _dbContext.Countries.AnyAsync(cancellationToken);

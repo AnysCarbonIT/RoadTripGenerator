@@ -7,5 +7,6 @@ namespace RoadTripGenerator.Application.Interfaces
         //Asynchrone car interoge la db
         Task<bool> HasCountriesAsync(CancellationToken cancellationToken);
         Task AddCountryAsync(IReadOnlyList<Country> countries, CancellationToken cancellationToken);
+        Task<IReadOnlyList<Country>> GetCountriesAsync(int page, int pageSize, CancellationToken cancellationToken);
     }
 }

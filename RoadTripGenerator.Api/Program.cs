@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 using RoadTripGenerator.Application.Interfaces;
+using RoadTripGenerator.Application.UseCases;
+using RoadTripGenerator.Api.Mappers;
 using RoadTripGenerator.Infrastructure.ExternalUpload;
 using RoadTripGenerator.Infrastructure.Persistence;
 using RoadTripGenerator.Infrastructure.Persistence.DataAccess;
@@ -18,7 +20,7 @@ builder.Services.AddDbContext<RoadTripGeneratorDbContext>(
 
 
 // DI sur l'appel à l'API REST Countries (avec clé API commande dotnet user-secret)
-string apiKey = builder.Configuration["RestCountries:ApiKey"] ?? throw new InvalidOperationException("Clé API REST Countries manquante."); ; 
+string apiKey = builder.Configuration["RestCountries:ApiKey"] ?? throw new InvalidOperationException("Clé API REST Countries manquante."); 
 builder.Services.AddHttpClient<ICountryApiClient, RestCountryClient>(client => 
 {
     client.BaseAddress = new Uri("https://api.restcountries.com/"); // en dur ici 
@@ -28,6 +30,8 @@ builder.Services.AddHttpClient<ICountryApiClient, RestCountryClient>(client =>
 
 
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IGetCountriesUseCase, GetCountriesUseCase>();
+builder.Services.AddScoped<CountryResponseMapper>();
 builder.Services.AddScoped<CountryInitializationService>();
 
 var app = builder.Build();
