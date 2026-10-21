@@ -33,6 +33,9 @@ builder.Services.AddScoped<ICountryRepository, CountryRepository>();
 builder.Services.AddScoped<IGetCountriesUseCase, GetCountriesUseCase>();
 builder.Services.AddScoped<CountryResponseMapper>();
 builder.Services.AddScoped<CountryInitializationService>();
+builder.Services.AddScoped<IRoadTripRepository, RoadTripRepository>();
+builder.Services.AddScoped<IGetRoadTripUseCase, GetRoadTripUseCase>();
+builder.Services.AddScoped<RoadTripResponseMapper>();
 
 var app = builder.Build();
 // Configure the HTTP request pipeline.
