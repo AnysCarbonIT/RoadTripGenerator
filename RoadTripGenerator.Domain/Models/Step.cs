@@ -15,6 +15,16 @@ namespace RoadTripGenerator.Domain.Models
 
         public  int Order { get; private set; }
 
+        public void SetOrder(int order)
+        {
+            if (order < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(order), "L'ordre doit être supérieur à zéro.");
+            }
+
+            Order = order;
+        }
+
 
     }
 

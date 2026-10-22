@@ -8,5 +8,6 @@ namespace RoadTripGenerator.Application.Interfaces
         Task<bool> HasCountriesAsync(CancellationToken cancellationToken);
         Task AddCountryAsync(IReadOnlyList<Country> countries, CancellationToken cancellationToken);
         Task<IReadOnlyList<Country>> GetCountriesAsync(int page, int pageSize, CancellationToken cancellationToken);
+        Task<bool> AllCountriesExistAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken);
     }
 }

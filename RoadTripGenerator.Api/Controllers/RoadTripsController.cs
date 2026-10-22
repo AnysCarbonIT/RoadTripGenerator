@@ -11,12 +11,17 @@ namespace RoadTripGenerator.Api.Controllers
     public class RoadTripsController : Controller
     {
         private readonly IGetRoadTripUseCase _getRoadTripUseCase;
+        private readonly IReplaceRoadTripUseCase _replaceRoadTripUseCase;
         private readonly RoadTripResponseMapper _mapper;
         private string UserId { get; set; } = string.Empty;
 
-        public RoadTripsController(IGetRoadTripUseCase getRoadTripUseCase, RoadTripResponseMapper mapper)
+        public RoadTripsController(
+            IGetRoadTripUseCase getRoadTripUseCase,
+            IReplaceRoadTripUseCase replaceRoadTripUseCase,
+            RoadTripResponseMapper mapper)
         {
             _getRoadTripUseCase = getRoadTripUseCase;
+            _replaceRoadTripUseCase = replaceRoadTripUseCase;
             _mapper = mapper;
         }
 
@@ -25,6 +30,22 @@ namespace RoadTripGenerator.Api.Controllers
         {
             var roadTrip = await _getRoadTripUseCase.ExecuteAsync(UserId, cancellationToken);
             return Ok(_mapper.MapToResponse(roadTrip));
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<RoadTripResponseDto>> ReplaceRoadTripAsync(
+            [FromBody] ReplaceRoadTripRequestDto request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var roadTrip = await _replaceRoadTripUseCase.ExecuteAsync(
+                    UserId, request.Countries, cancellationToken);
+                return Ok(_mapper.MapToResponse(roadTrip));
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
         }
 
         // Ce contrôle sera exécuté avant chacune des futures actions RoadTripgrace a OnActionExecuting provenant de :Controller. 

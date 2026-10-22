@@ -5,5 +5,6 @@ namespace RoadTripGenerator.Application.Interfaces
     public interface IRoadTripRepository
     {
         Task<RoadTrip?> GetByUserIdAsync(string userId, CancellationToken cancellationToken);
+        Task<RoadTrip> ReplaceAsync(string userId, IReadOnlyList<Step> steps, CancellationToken cancellationToken);
     }
 }
