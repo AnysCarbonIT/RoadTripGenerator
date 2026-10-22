@@ -6,5 +6,6 @@ namespace RoadTripGenerator.Application.Interfaces
     {
         Task<RoadTrip?> GetByUserIdAsync(string userId, CancellationToken cancellationToken);
         Task<RoadTrip> ReplaceAsync(string userId, IReadOnlyList<Step> steps, CancellationToken cancellationToken);
+        Task<RoadTrip> AddCountryAsync(string userId, string coountryCca3, CancellationToken cancellationToken);
     }
 }

@@ -12,20 +12,24 @@ namespace RoadTripGenerator.Api.Controllers
     {
         private readonly IGetRoadTripUseCase _getRoadTripUseCase;
         private readonly IReplaceRoadTripUseCase _replaceRoadTripUseCase;
+        private readonly IAddCountryUseCase _AddCountryUseCase;
         private readonly RoadTripResponseMapper _mapper;
         private string UserId { get; set; } = string.Empty;
 
         public RoadTripsController(
             IGetRoadTripUseCase getRoadTripUseCase,
             IReplaceRoadTripUseCase replaceRoadTripUseCase,
+            IAddCountryUseCase addCountryUseCase,
             RoadTripResponseMapper mapper)
         {
             _getRoadTripUseCase = getRoadTripUseCase;
             _replaceRoadTripUseCase = replaceRoadTripUseCase;
+            _AddCountryUseCase = addCountryUseCase;
             _mapper = mapper;
         }
 
         [HttpGet]
+
         public async Task<ActionResult<RoadTripResponseDto>> GetRoadTripAsync(CancellationToken cancellationToken)
         {
             var roadTrip = await _getRoadTripUseCase.ExecuteAsync(UserId, cancellationToken);
@@ -33,13 +37,26 @@ namespace RoadTripGenerator.Api.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<RoadTripResponseDto>> ReplaceRoadTripAsync(
-            [FromBody] ReplaceRoadTripRequestDto request, CancellationToken cancellationToken)
+
+        public async Task<ActionResult<RoadTripResponseDto>> ReplaceRoadTripAsync([FromBody] ReplaceRoadTripRequestDto request, CancellationToken cancellationToken)
         {
             try
             {
-                var roadTrip = await _replaceRoadTripUseCase.ExecuteAsync(
-                    UserId, request.Countries, cancellationToken);
+                var roadTrip = await _replaceRoadTripUseCase.ExecuteAsync(UserId, request.Countries, cancellationToken);
+                return Ok(_mapper.MapToResponse(roadTrip));
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpPost ("country")]
+        public async Task<ActionResult<RoadTripResponseDto>> AddCountryAsync([FromBody] AddCountryRequestDto request, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var roadTrip = await _AddCountryUseCase.ExecuteAsync(UserId, request.Cca3, cancellationToken);
                 return Ok(_mapper.MapToResponse(roadTrip));
             }
             catch (ArgumentException exception)

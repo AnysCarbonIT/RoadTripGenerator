@@ -8,15 +8,13 @@ namespace RoadTripGenerator.Application.UseCases
         private readonly ICountryRepository _countryRepository;
         private readonly IRoadTripRepository _roadTripRepository;
 
-        public ReplaceRoadTripUseCase(
-            ICountryRepository countryRepository, IRoadTripRepository roadTripRepository)
+        public ReplaceRoadTripUseCase(ICountryRepository countryRepository, IRoadTripRepository roadTripRepository)
         {
             _countryRepository = countryRepository;
             _roadTripRepository = roadTripRepository;
         }
 
-        public async Task<RoadTrip> ExecuteAsync(
-            string userId, IReadOnlyList<string> countries, CancellationToken cancellationToken)
+        public async Task<RoadTrip> ExecuteAsync(string userId, IReadOnlyList<string> countries, CancellationToken cancellationToken)
         {
             if (countries == null)
             {

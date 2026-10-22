@@ -25,8 +25,7 @@ namespace RoadTripGenerator.Infrastructure.Persistence.DataAccess
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<bool> AllCountriesExistAsync(
-            IReadOnlyList<string> codes, CancellationToken cancellationToken)
+        public async Task<bool> AllCountriesExistAsync(IReadOnlyList<string> codes, CancellationToken cancellationToken)
         {
             int count = await _dbContext.Countries
                 .CountAsync(country => codes.Contains(country.Cca3), cancellationToken);
