@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Domain.Models;
-using System.Reflection.Metadata.Ecma335;
 
 namespace RoadTripGenerator.Infrastructure.Persistence.DataAccess
 {
@@ -103,6 +102,41 @@ namespace RoadTripGenerator.Infrastructure.Persistence.DataAccess
             return roadTrip;
 
 
+        }
+        public async Task<RoadTrip> DeleteCountryAsync(string userId, string countryCca3, CancellationToken cancellationToken)
+        {
+            var roadTrip = await _dbContext.Roadtrips
+                .AsNoTracking() //utile car on ne va pas chnager les entités dans le contexte, on va juste les lire et contitué nouvelle liste ( replaceasync fera la mise à jour)
+                .Include(roadTrip => roadTrip.Steps)
+                .FirstOrDefaultAsync(roadTrip => roadTrip.UserId == userId, cancellationToken);
+                
+            if (roadTrip == null)
+            {
+                throw new ArgumentException($"L'utilisateur '{userId}' n'a pas de Roadtrip.");
+            }
+            var stepToRemove = roadTrip.Steps.FirstOrDefault(step => step.CountryCca3 == countryCca3);
+            if (stepToRemove == null)
+            {
+                throw new ArgumentException($"Le pays '{countryCca3}' n'est pas présent dans le Roadtrip de l'utilisateur '{userId}'.");
+            }
+            //compose une nouvelle liste sans l'element a supprimer puis reultise replaceAsync ( du put) 
+            var stepsWithoutDeleted = roadTrip.Steps
+                .Where(step => step.CountryCca3 != countryCca3)
+                .OrderBy(step => step.Order)
+                .ToList();
+            var newStepsList = new List<Step>();
+            int order = 1;
+            foreach (var step in stepsWithoutDeleted)
+            {
+                var newStep = new Step
+                {
+                    CountryCca3 = step.CountryCca3,
+                };
+                newStep.SetOrder(order); 
+                newStepsList.Add(newStep);
+                order++;
+            }
+            return await ReplaceAsync(userId, newStepsList, cancellationToken);
         }
     }
 }

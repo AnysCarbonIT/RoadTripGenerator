@@ -36,6 +36,7 @@ builder.Services.AddScoped<CountryInitializationService>();
 builder.Services.AddScoped<IRoadTripRepository, RoadTripRepository>();
 builder.Services.AddScoped<IGetRoadTripUseCase, GetRoadTripUseCase>();
 builder.Services.AddScoped<IReplaceRoadTripUseCase, ReplaceRoadTripUseCase>();
+builder.Services.AddScoped<IDeleteCountryUseCase, DeleteCountryUseCase>();
 builder.Services.AddScoped<RoadTripResponseMapper>();
 builder.Services.AddScoped<IAddCountryUseCase, AddCountryUseCase>();
 

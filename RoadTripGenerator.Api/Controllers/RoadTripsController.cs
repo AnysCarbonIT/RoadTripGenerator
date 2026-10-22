@@ -13,6 +13,7 @@ namespace RoadTripGenerator.Api.Controllers
         private readonly IGetRoadTripUseCase _getRoadTripUseCase;
         private readonly IReplaceRoadTripUseCase _replaceRoadTripUseCase;
         private readonly IAddCountryUseCase _AddCountryUseCase;
+        private readonly IDeleteCountryUseCase _DeleteCountryUseCase;
         private readonly RoadTripResponseMapper _mapper;
         private string UserId { get; set; } = string.Empty;
 
@@ -20,11 +21,13 @@ namespace RoadTripGenerator.Api.Controllers
             IGetRoadTripUseCase getRoadTripUseCase,
             IReplaceRoadTripUseCase replaceRoadTripUseCase,
             IAddCountryUseCase addCountryUseCase,
+            IDeleteCountryUseCase deleteCountryUseCase,
             RoadTripResponseMapper mapper)
         {
             _getRoadTripUseCase = getRoadTripUseCase;
             _replaceRoadTripUseCase = replaceRoadTripUseCase;
             _AddCountryUseCase = addCountryUseCase;
+            _DeleteCountryUseCase = deleteCountryUseCase;
             _mapper = mapper;
         }
 
@@ -57,6 +60,20 @@ namespace RoadTripGenerator.Api.Controllers
             try
             {
                 var roadTrip = await _AddCountryUseCase.ExecuteAsync(UserId, request.Cca3, cancellationToken);
+                return Ok(_mapper.MapToResponse(roadTrip));
+            }
+            catch (ArgumentException exception)
+            {
+                return BadRequest(exception.Message);
+            }
+        }
+
+        [HttpDelete("country/{cca3}")]
+        public async Task<ActionResult<RoadTripResponseDto>> DeleteCountryAsync([FromRoute] string cca3, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var roadTrip = await _DeleteCountryUseCase.ExecuteAsync(UserId, cca3, cancellationToken);
                 return Ok(_mapper.MapToResponse(roadTrip));
             }
             catch (ArgumentException exception)

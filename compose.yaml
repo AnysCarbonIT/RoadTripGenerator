@@ -1,6 +1,20 @@
 name: roadtripgenerator
 
 services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "127.0.0.1:5103:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__RoadTripGeneratorDb: "Host=postgres;Port=5432;Database=roadtrip_dev;Username=roadtrip;Password=${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD in .env}"
+      RestCountries__ApiKey: ${REST_COUNTRIES_API_KEY:?Define REST_COUNTRIES_API_KEY in .env}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     image: postgres:17
     restart: unless-stopped
