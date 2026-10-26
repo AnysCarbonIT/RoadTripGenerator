@@ -10,6 +10,10 @@ namespace RoadTripGenerator.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("RoadTrips");
 
+            builder.Navigation(r => r.Steps)
+                   .HasField("_steps")
+                   .UsePropertyAccessMode(PropertyAccessMode.Field); // EF Core peut accéder au champ privé 
+
             builder.HasKey(r => r.Id);
             builder.Property(r => r.UserId)
                    .IsRequired();

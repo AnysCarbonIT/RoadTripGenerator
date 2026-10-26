@@ -16,30 +16,25 @@ namespace RoadTripGenerator.Application.UseCases
 
         public async Task<RoadTrip> ExecuteAsync(string userId, IReadOnlyList<string> countries, CancellationToken cancellationToken)
         {
-            if (countries == null)
-            {
-                throw new ArgumentException("La liste des pays est obligatoire.");
-            }
+            var roadTrip = await _roadTripRepository.GetByUserIdAsync(userId, cancellationToken);
+            bool isNew = roadTrip == null;
+            roadTrip ??= new RoadTrip(userId);
 
-            if (countries.Distinct().Count() != countries.Count)
-            {
-                throw new ArgumentException("Un pays ne peut pas apparaître plusieurs fois dans l'itinéraire.");
-            }
+            // Le Domain valide toute la liste avant de modifier les étapes.
+            roadTrip.ReplaceCountries(countries);
 
             if (countries.Count > 0 && !await _countryRepository.AllCountriesExistAsync(countries, cancellationToken))
             {
                 throw new ArgumentException("Un ou plusieurs codes pays sont inconnus.");
             }
 
-            var steps = new List<Step>();
-            for (int index = 0; index < countries.Count; index++)
+            if (isNew)
             {
-                var step = new Step { CountryCca3 = countries[index] };
-                step.SetOrder(index + 1);
-                steps.Add(step);
-            }
+                _roadTripRepository.Add(roadTrip);
+            } // car non suivi par EF Core, donc on doit l'ajouter explicitement (nouvelle entité) 
 
-            return await _roadTripRepository.ReplaceAsync(userId, steps, cancellationToken);
+            await _roadTripRepository.SaveChangesAsync(cancellationToken);
+            return roadTrip;
         }
     }
 }

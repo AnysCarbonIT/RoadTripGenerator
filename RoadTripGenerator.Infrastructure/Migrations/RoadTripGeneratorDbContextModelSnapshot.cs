@@ -95,7 +95,7 @@ namespace RoadTripGenerator.Infrastructure.Migrations
 
                     b.HasIndex("CountryCca3");
 
-                    b.HasIndex("RoadTripId", "Order")
+                    b.HasIndex("RoadTripId", "CountryCca3")
                         .IsUnique();
 
                     b.ToTable("Steps", (string)null);

@@ -1,4 +1,4 @@
-ï»¿using RoadTripGenerator.Application.Interfaces;
+using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +11,6 @@ namespace RoadTripGenerator.Application.UseCases
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IRoadTripRepository _roadTripRepository;
-
         public AddCountryUseCase(ICountryRepository countryRepository, IRoadTripRepository roadTripRepository)
         {
             _countryRepository = countryRepository;
@@ -19,7 +18,7 @@ namespace RoadTripGenerator.Application.UseCases
         }
         public async Task <RoadTrip> ExecuteAsync(string userId, string countryCca3, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrEmpty(countryCca3))
+            if (string.IsNullOrWhiteSpace(countryCca3))
             {
                 throw new ArgumentException("Le code pays est obligatoire.");
             }
@@ -28,7 +27,22 @@ namespace RoadTripGenerator.Application.UseCases
             {
                 throw new ArgumentException("Le code pays est inconnu.");
             }
-            return await _roadTripRepository.AddCountryAsync(userId, countryCca3, cancellationToken);
+            var roadTrip = await _roadTripRepository.GetByUserIdAsync( userId, cancellationToken);
+
+            bool isNew = roadTrip == null;
+
+            roadTrip ??= new RoadTrip(userId);
+
+            roadTrip.AddCountry(countryCca3);
+
+            if (isNew)
+            {
+                _roadTripRepository.Add(roadTrip);
+            } // car non suivi par EF Core, donc on doit l'ajouter explicitement (nouvelle entité) 
+
+            await _roadTripRepository.SaveChangesAsync(cancellationToken);
+
+            return roadTrip;
 
         }
     }

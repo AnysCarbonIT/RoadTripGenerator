@@ -24,8 +24,8 @@ namespace RoadTripGenerator.Infrastructure.Persistence.Configurations
                    .WithMany(r => r.Steps)
                    .HasForeignKey(s => s.RoadTripId)
                    .IsRequired();
-            // Règle:  order doit être unique pour un meme Roadtrip
-            builder.HasIndex(s => new { s.RoadTripId, s.Order })
+            // Un pays ne peut apparaître qu'une fois dans un itinéraire.
+            builder.HasIndex(s => new { s.RoadTripId, s.CountryCca3 })
                    .IsUnique();
 
             builder.HasOne(s=> s.Country)
