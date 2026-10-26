@@ -33,18 +33,16 @@ namespace RoadTripGenerator.Infrastructure.ExternalUpload
             {
                 throw new ArgumentException("Le drapeau du pays est manquant.");
             }
-            return new Country
-            {
-                Cca3 = restCountryDto.Codes.Alpha3,
-                Name = restCountryDto.Names.Common,
-                Region = restCountryDto.Region,
-                Flag = restCountryDto.Flag.Emoji,
-                Population = restCountryDto.Population,
-                CapitalCities = restCountryDto.Capitals?
+            return new Country(
+                cca3: restCountryDto.Codes.Alpha3,
+                name: restCountryDto.Names.Common,
+                region: restCountryDto.Region,
+                flag: restCountryDto.Flag.Emoji,
+                population: restCountryDto.Population,
+                capitalCities: restCountryDto.Capitals?
                     .Where(capital => !string.IsNullOrWhiteSpace(capital.Name))
                     .Select(capital => capital.Name!)
-                    .ToList() ?? new List<string>() // ici je change la liste de RestCountryCapitalDto en une liste de string pour conveniur a country
-            };
+                    .ToList() ?? new List<string>());
         }
     }
 }

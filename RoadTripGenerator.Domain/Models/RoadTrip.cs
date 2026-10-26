@@ -23,7 +23,7 @@ namespace RoadTripGenerator.Domain.Models
         }
         public void AddCountry(string countryCca3)
         {
-            ValidateCountryCode(countryCca3);
+            Country.ValidateCountryCode(countryCca3);
 
             if (_steps.Any(step => step.CountryCca3 == countryCca3))
             {
@@ -38,7 +38,7 @@ namespace RoadTripGenerator.Domain.Models
         }
         public void RemoveCountry(string countryCca3)
         {
-            ValidateCountryCode(countryCca3);
+            Country.ValidateCountryCode(countryCca3);
             Step? stepToRemove = _steps.FirstOrDefault(step => step.CountryCca3 == countryCca3);
             if (stepToRemove == null)
             {
@@ -62,7 +62,7 @@ namespace RoadTripGenerator.Domain.Models
             // Valider toute la liste avant de modifier les étapes
             foreach (string countryCode in countries)
             {
-                ValidateCountryCode(countryCode);
+                Country.ValidateCountryCode(countryCode);
             }
 
             if (countries.Distinct().Count() != countries.Count)
@@ -77,20 +77,6 @@ namespace RoadTripGenerator.Domain.Models
                 Step newStep = new Step(countries[index], index + 1);
 
                 _steps.Add(newStep);
-            }
-        }
-        private static void ValidateCountryCode(string countryCca3)
-        {
-            if (string.IsNullOrWhiteSpace(countryCca3))
-            {
-                throw new ArgumentException(
-                    "Le code pays est obligatoire.",
-                    nameof(countryCca3));
-            }
-
-            if (countryCca3.Length != 3 || !countryCca3.All(c => c >= 'A' && c <= 'Z'))
-            {
-                throw new ArgumentException("Le code pays doit contenir trois lettres majuscules.",nameof(countryCca3));
             }
         }
     }

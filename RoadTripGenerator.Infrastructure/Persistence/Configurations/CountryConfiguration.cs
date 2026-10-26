@@ -11,6 +11,13 @@ namespace RoadTripGenerator.Infrastructure.Persistence.Configurations
         {
             builder.ToTable("Countries");
 
+            // La vue publique est en lecture seule ; EF persiste la liste privée.
+            builder.Ignore(c => c.CapitalCities);
+            builder.PrimitiveCollection<List<string>>("_capitalCities")
+                   .HasColumnName("CapitalCities")
+                   .HasColumnType("text[]")
+                   .IsRequired();
+
             builder.HasKey(c => c.Cca3);
 
             builder.Property(c => c.Cca3)
