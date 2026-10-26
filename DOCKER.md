@@ -78,3 +78,43 @@ docker compose stop
 Redémarrer avec `docker compose up -d`.
 `docker compose down` retire les conteneurs et le réseau mais conserve le volume.
 Ne pas utiliser `docker compose down --volumes` : cela supprimerait les données PostgreSQL.
+
+## Premier test d'intégration NUnit
+
+Les tests utilisent un conteneur `postgres-test` distinct et la base `roadtrip_test`.
+Le stockage est temporaire : il est perdu quand ce conteneur PostgreSQL est arrêté.
+Le volume et les données de `roadtrip_dev` ne sont jamais utilisés.
+
+```powershell
+docker compose --profile tests run --build --rm tests
+```
+
+`RoadTripApiFactory.InitializeDatabaseAsync()` applique les migrations EF existantes
+avec `MigrateAsync()`, puis insère trois pays de test : DEU, FRA et HRV.
+Ces données servent seulement aux tests et ne sont pas les données complètes de REST Countries.
+La clé API fictive du service tests n'est jamais utilisée : les pays sont déjà présents
+lorsque l'initialisation habituelle de l'API s'exécute.
+
+`CountriesTests` démarre l'API avec WebApplicationFactory, envoie un GET sur
+`/api/countries?page=2&pageSize=1`, puis vérifie HTTP 200 et le JSON de la France.
+Le tri par CCA3 donne DEU, FRA, HRV : la deuxième page contient donc FRA.
+Le serveur HTTP est interne au processus de test ; le test n'appelle pas l'API de développement sur le port 5103.
+
+Pour voir la table créée par EF :
+
+```powershell
+docker compose --profile tests exec postgres-test psql -U roadtrip_test -d roadtrip_test
+```
+
+Puis dans psql :
+
+```sql
+SELECT "Cca3", "Name" FROM "Countries" ORDER BY "Cca3";
+SELECT "MigrationId" FROM "__EFMigrationsHistory";
+```
+
+Quitter avec `\q`. Pour arrêter seulement la base de test :
+
+```powershell
+docker compose --profile tests stop postgres-test
+```

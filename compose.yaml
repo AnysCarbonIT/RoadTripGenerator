@@ -1,6 +1,35 @@
 name: roadtripgenerator
 
 services:
+  tests:
+    profiles: [tests]
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: tests
+    environment:
+      ASPNETCORE_ENVIRONMENT: Testing
+      ConnectionStrings__RoadTripGeneratorDb: "Host=postgres-test;Port=5432;Database=roadtrip_test;Username=roadtrip_test;Password=${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD in .env}"
+      RestCountries__ApiKey: integration-tests-not-used
+    depends_on:
+      postgres-test:
+        condition: service_healthy
+
+  postgres-test:
+    profiles: [tests]
+    image: postgres:17
+    environment:
+      POSTGRES_DB: roadtrip_test
+      POSTGRES_USER: roadtrip_test
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Define POSTGRES_PASSWORD in .env}
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roadtrip_test -d roadtrip_test"]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
   api:
     build:
       context: .

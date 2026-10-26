@@ -11,6 +11,7 @@ namespace RoadTripGenerator.Application.UseCases
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IRoadTripRepository _roadTripRepository;
+
         public AddCountryUseCase(ICountryRepository countryRepository, IRoadTripRepository roadTripRepository)
         {
             _countryRepository = countryRepository;

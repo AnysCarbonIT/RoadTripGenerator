@@ -88,7 +88,7 @@ namespace RoadTripGenerator.Api.Controllers
         {
             if (!Request.Headers.TryGetValue("X-User-ID", out var values)|| values.Count != 1|| string.IsNullOrWhiteSpace(values[0]))
             {
-                context.Result = BadRequest("Le header X-User-ID doit contenir un seul identifiant non vide.");
+                context.Result = Unauthorized("Le header X-User-ID doit contenir un seul identifiant non vide.");
                 return;
             }
 

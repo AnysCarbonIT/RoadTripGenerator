@@ -11,6 +11,11 @@ COPY . .
 RUN dotnet publish RoadTripGenerator.Api/RoadTripGenerator.Api.csproj \
     -c Release -o /app/publish --no-restore -p:UseAppHost=false
 
+FROM build AS tests
+WORKDIR /src
+RUN dotnet restore RoadTripGenerator.IntegrationTests/RoadTripGenerator.IntegrationTests.csproj
+ENTRYPOINT ["dotnet", "test", "RoadTripGenerator.IntegrationTests/RoadTripGenerator.IntegrationTests.csproj", "--no-restore", "--logger", "console;verbosity=normal", "-p:UseAppHost=false"]
+
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
