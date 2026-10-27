@@ -38,21 +38,12 @@ namespace RoadTripGenerator.IntegrationTests
             if (!await dbContext.Countries.AnyAsync())
             {
                 dbContext.Countries.AddRange(
-                    new Country
-                    {
-                        Cca3 = "HRV", Name = "Croatia", Region = "Europe",
-                        Population = 3_800_000, CapitalCities = new List<string> { "Zagreb" }, Flag = "🇭🇷"
-                    },
-                    new Country
-                    {
-                        Cca3 = "FRA", Name = "France", Region = "Europe",
-                        Population = 68_000_000, CapitalCities = new List<string> { "Paris" }, Flag = "🇫🇷"
-                    },
-                    new Country
-                    {
-                        Cca3 = "DEU", Name = "Germany", Region = "Europe",
-                        Population = 84_000_000, CapitalCities = new List<string> { "Berlin" }, Flag = "🇩🇪"
-                    });
+                    new Country("HRV", "Croatia", "Europe", 3_800_000,
+                        new List<string> { "Zagreb" }, "🇭🇷"),
+                    new Country("FRA", "France", "Europe", 68_000_000,
+                        new List<string> { "Paris" }, "🇫🇷"),
+                    new Country("DEU", "Germany", "Europe", 84_000_000,
+                        new List<string> { "Berlin" }, "🇩🇪"));
 
                 await dbContext.SaveChangesAsync();
             }

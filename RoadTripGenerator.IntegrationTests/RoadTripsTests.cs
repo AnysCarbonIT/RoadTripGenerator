@@ -155,6 +155,51 @@ namespace RoadTripGenerator.IntegrationTests
             Assert.That(json.RootElement.GetProperty("countries").GetArrayLength(), Is.EqualTo(0));
         }
 
+        [TestCase("FRA", HttpStatusCode.NotFound)]
+        [TestCase("invalid", HttpStatusCode.BadRequest)]
+        public async Task DeleteCountry_WithoutRoadTrip_ReturnsProblemDetails(string code, HttpStatusCode expectedStatus)
+        {
+            using var response = await _client.DeleteAsync($"/api/roadtrip/country/{code}");
+            Assert.That(response.StatusCode, Is.EqualTo(expectedStatus));
+            Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/problem+json"));
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            Assert.That(json.RootElement.GetProperty("status").GetInt32(), Is.EqualTo((int)expectedStatus));
+            Assert.That(json.RootElement.GetProperty("traceId").GetString(), Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task DeleteCountry_NotInRoadTrip_ReturnsNotFound()
+        {
+            using var initial = await _client.PutAsJsonAsync("/api/roadtrip", new { countries = new[] { "DEU" } });
+            Assert.That(initial.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            using var response = await _client.DeleteAsync("/api/roadtrip/country/FRA");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+            Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/problem+json"));
+        }
+
+        [TestCase("FRA")]
+        [TestCase("ZZZ")]
+        [TestCase("fra")]
+        public async Task PostCountry_InvalidAddition_ReturnsBadRequest(string code)
+        {
+            using var initial = await _client.PutAsJsonAsync("/api/roadtrip", new { countries = new[] { "FRA" } });
+            Assert.That(initial.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+            using var response = await _client.PostAsJsonAsync("/api/roadtrip/country", new { cca3 = code });
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+            Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/problem+json"));
+            using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            Assert.That(json.RootElement.GetProperty("traceId").GetString(), Is.Not.Empty);
+        }
+
+        [Test]
+        public async Task GetRoadTrip_WithoutUserHeader_ReturnsUnauthorizedProblem()
+        {
+            _client.DefaultRequestHeaders.Remove("X-User-ID");
+            using var response = await _client.GetAsync("/api/roadtrip");
+            Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+            Assert.That(response.Content.Headers.ContentType?.MediaType, Is.EqualTo("application/problem+json"));
+        }
+
         [OneTimeTearDown]
         public async Task CleanupAsync()
         {
