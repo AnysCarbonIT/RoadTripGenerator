@@ -43,52 +43,31 @@ namespace RoadTripGenerator.Api.Controllers
 
         public async Task<ActionResult<RoadTripResponseDto>> ReplaceRoadTripAsync([FromBody] ReplaceRoadTripRequestDto request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var roadTrip = await _replaceRoadTripUseCase.ExecuteAsync(UserId, request.Countries, cancellationToken);
-                return Ok(_mapper.MapToResponse(roadTrip));
-            }
-            catch (ArgumentException exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            var roadTrip = await _replaceRoadTripUseCase.ExecuteAsync(UserId, request.Countries, cancellationToken);
+            return Ok(_mapper.MapToResponse(roadTrip));
         }
 
         [HttpPost ("country")]
         public async Task<ActionResult<RoadTripResponseDto>> AddCountryAsync([FromBody] AddCountryRequestDto request, CancellationToken cancellationToken)
         {
-            try
-            {
-                var roadTrip = await _AddCountryUseCase.ExecuteAsync(UserId, request.Cca3, cancellationToken);
-                return Ok(_mapper.MapToResponse(roadTrip));
-            }
-            catch (ArgumentException exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            var roadTrip = await _AddCountryUseCase.ExecuteAsync(UserId, request.Cca3, cancellationToken);
+            return Ok(_mapper.MapToResponse(roadTrip));
         }
 
         [HttpDelete("country/{cca3}")]
         public async Task<ActionResult<RoadTripResponseDto>> DeleteCountryAsync([FromRoute] string cca3, CancellationToken cancellationToken)
         {
-            try
-            {
-                var roadTrip = await _DeleteCountryUseCase.ExecuteAsync(UserId, cca3, cancellationToken);
-                return Ok(_mapper.MapToResponse(roadTrip));
-            }
-            catch (ArgumentException exception)
-            {
-                return BadRequest(exception.Message);
-            }
+            var roadTrip = await _DeleteCountryUseCase.ExecuteAsync(UserId, cca3, cancellationToken);
+            return Ok(_mapper.MapToResponse(roadTrip));
         }
 
-        // Ce contrôle sera exécuté avant chacune des futures actions RoadTripgrace a OnActionExecuting provenant de :Controller. 
+        // Ce contrôle sera exécuté avant chacune des futures actions RoadTrip grace a OnActionExecuting provenant de :Controller. 
         // Il vérifie la présence du header X - User - ID et le stocke dans UserId pour les autres actions 
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             if (!Request.Headers.TryGetValue("X-User-ID", out var values)|| values.Count != 1|| string.IsNullOrWhiteSpace(values[0]))
             {
-                context.Result = Unauthorized("Le header X-User-ID doit contenir un seul identifiant non vide.");
+                context.Result = Problem(statusCode: StatusCodes.Status401Unauthorized, title: "Identifiant utilisateur manquant ou invalide", detail: "Le header X-User-ID doit contenir un seul identifiant non vide.");
                 return;
             }
 

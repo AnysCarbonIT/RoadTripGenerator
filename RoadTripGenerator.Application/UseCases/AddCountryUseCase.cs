@@ -1,5 +1,6 @@
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Domain.Models;
+using RoadTripGenerator.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net.Security;
@@ -18,14 +19,11 @@ namespace RoadTripGenerator.Application.UseCases
         }
         public async Task <RoadTrip> ExecuteAsync(string userId, string countryCca3, CancellationToken cancellationToken)
         {
-            if (string.IsNullOrWhiteSpace(countryCca3))
-            {
-                throw new ArgumentException("Le code pays est obligatoire.");
-            }
+            Country.ValidateCountryCode(countryCca3);
 
             if (!await _countryRepository.AllCountriesExistAsync(new List<string> { countryCca3 },cancellationToken))
             {
-                throw new ArgumentException("Le code pays est inconnu.");
+                throw new DomainValidationException("Le code pays est inconnu.");
             }
             var roadTrip = await _roadTripRepository.GetByUserIdAsync( userId, cancellationToken);
 
@@ -38,7 +36,7 @@ namespace RoadTripGenerator.Application.UseCases
             if (isNew)
             {
                 _roadTripRepository.Add(roadTrip);
-            } // car non suivi par EF Core, donc on doit l'ajouter explicitement (nouvelle entité) 
+            } // car non suivi par EF Core, donc on doit l'ajouter explicitement (nouvelle entitÃ©) 
 
             await _roadTripRepository.SaveChangesAsync(cancellationToken);
 

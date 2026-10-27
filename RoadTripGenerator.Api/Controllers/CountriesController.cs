@@ -27,7 +27,8 @@ namespace RoadTripGenerator.Api.Controllers
         {
             if ((long)(page - 1) * pageSize > int.MaxValue)
             {
-                return BadRequest("Le numéro de page est trop grand pour cette taille de page.");
+                return Problem(statusCode: StatusCodes.Status400BadRequest,
+                    title: "Pagination invalide", detail: "Le numéro de page est trop grand pour cette taille de page.");
             }
 
             var countries = await _getCountriesUseCase.ExecuteAsync(

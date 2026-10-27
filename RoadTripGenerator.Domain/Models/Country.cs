@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using RoadTripGenerator.Domain.Exceptions;
 
 namespace RoadTripGenerator.Domain.Models
 {
@@ -43,32 +44,32 @@ namespace RoadTripGenerator.Domain.Models
 
             if (string.IsNullOrWhiteSpace(name))
             {
-                throw new ArgumentException("Le nom du pays est obligatoire.",nameof(name));
+                throw new DomainValidationException("Le nom du pays est obligatoire.");
             }
 
             if (string.IsNullOrWhiteSpace(region))
             {
-                throw new ArgumentException( "La région du pays est obligatoire.",nameof(region));
+                throw new DomainValidationException("La région du pays est obligatoire.");
             }
 
             if (population < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(population),"La population ne peut pas être négative.");
+                throw new DomainValidationException("La population ne peut pas être négative.");
             }
 
             if (capitalCities == null)
             {
-                throw new ArgumentNullException(nameof(capitalCities));
+                throw new DomainValidationException("La liste des capitales est obligatoire.");
             }
 
             if (capitalCities.Any(string.IsNullOrWhiteSpace))
             {
-                throw new ArgumentException("Une capitale ne peut pas être vide.",nameof(capitalCities));
+                throw new DomainValidationException("Une capitale ne peut pas être vide.");
             }
 
             if (string.IsNullOrWhiteSpace(flag))
             {
-                throw new ArgumentException("Le drapeau est obligatoire.",nameof(flag));
+                throw new DomainValidationException("Le drapeau est obligatoire.");
             }
 
             Cca3 = cca3;
@@ -83,14 +84,12 @@ namespace RoadTripGenerator.Domain.Models
         {
             if (string.IsNullOrWhiteSpace(cca3))
             {
-                throw new ArgumentException(
-                    "Le code pays est obligatoire.",
-                    nameof(cca3));
+                throw new DomainValidationException("Le code pays est obligatoire.");
             }
 
             if (cca3.Length != 3 || !cca3.All(c => c >= 'A' && c <= 'Z'))
             {
-                throw new ArgumentException("Le code pays doit contenir trois lettres majuscules.",nameof(cca3));
+                throw new DomainValidationException("Le code pays doit contenir trois lettres majuscules.");
             }
         }
     }

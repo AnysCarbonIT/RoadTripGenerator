@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using RoadTripGenerator.Domain.Exceptions;
 
 namespace RoadTripGenerator.Domain.Models
 {
@@ -17,7 +18,7 @@ namespace RoadTripGenerator.Domain.Models
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
-                throw new ArgumentException("L'identifiant de l'utilisateur est obligatoire.", nameof(userId));
+                throw new DomainValidationException("L'identifiant de l'utilisateur est obligatoire.");
             }
             UserId = userId;
         }
@@ -27,7 +28,7 @@ namespace RoadTripGenerator.Domain.Models
 
             if (_steps.Any(step => step.CountryCca3 == countryCca3))
             {
-                throw new ArgumentException("Ce pays existe déjà dans l'itinéraire.");
+                throw new DomainValidationException("Ce pays existe déjà dans l'itinéraire.");
             }
 
             int order = _steps.Count + 1;
@@ -42,7 +43,7 @@ namespace RoadTripGenerator.Domain.Models
             Step? stepToRemove = _steps.FirstOrDefault(step => step.CountryCca3 == countryCca3);
             if (stepToRemove == null)
             {
-                throw new ArgumentException("Ce pays n'existe pas dans l'itinéraire.");
+                throw new CountryNotInRoadTripException();
             }
             _steps.Remove(stepToRemove);
             _steps.Sort((left, right) => left.Order.CompareTo(right.Order));
@@ -56,7 +57,7 @@ namespace RoadTripGenerator.Domain.Models
         {
             if (countries == null)
             {
-                throw new ArgumentException("La liste des pays est obligatoire.",nameof(countries));
+                throw new DomainValidationException("La liste des pays est obligatoire.");
             }
 
             // Valider toute la liste avant de modifier les étapes
@@ -67,7 +68,7 @@ namespace RoadTripGenerator.Domain.Models
 
             if (countries.Distinct().Count() != countries.Count)
             {
-                throw new ArgumentException("Un pays ne peut pas apparaître plusieurs fois dans l'itinéraire.");
+                throw new DomainValidationException("Un pays ne peut pas apparaître plusieurs fois dans l'itinéraire.");
             }
 
             _steps.Clear();

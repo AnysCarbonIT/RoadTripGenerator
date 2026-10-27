@@ -1,5 +1,6 @@
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Domain.Models;
+using RoadTripGenerator.Domain.Exceptions;
 
 namespace RoadTripGenerator.Application.UseCases
 {
@@ -25,7 +26,7 @@ namespace RoadTripGenerator.Application.UseCases
 
             if (countries.Count > 0 && !await _countryRepository.AllCountriesExistAsync(countries, cancellationToken))
             {
-                throw new ArgumentException("Un ou plusieurs codes pays sont inconnus.");
+                throw new DomainValidationException("Un ou plusieurs codes pays sont inconnus.");
             }
 
             if (isNew)

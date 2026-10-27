@@ -1,5 +1,6 @@
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Domain.Models;
+using RoadTripGenerator.Application.Exceptions;
 
 namespace RoadTripGenerator.Application.UseCases
 {
@@ -14,7 +15,8 @@ namespace RoadTripGenerator.Application.UseCases
 
         public async Task<RoadTrip> ExecuteAsync(string userId, string countryCca3, CancellationToken cancellationToken)
         {
-            var roadTrip = await _roadTripRepository.GetByUserIdAsync(userId, cancellationToken) ?? throw new ArgumentException("Aucun itinéraire trouvé pour cet utilisateur.");
+            Country.ValidateCountryCode(countryCca3);
+            var roadTrip = await _roadTripRepository.GetByUserIdAsync(userId, cancellationToken) ?? throw new RoadTripNotFoundException();
 
             roadTrip.RemoveCountry(countryCca3);
             await _roadTripRepository.SaveChangesAsync(cancellationToken);

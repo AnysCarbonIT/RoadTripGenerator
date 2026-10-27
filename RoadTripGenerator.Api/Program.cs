@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using RoadTripGenerator.Application.Interfaces;
 using RoadTripGenerator.Application.UseCases;
 using RoadTripGenerator.Api.Mappers;
+using RoadTripGenerator.Api.Middlewares;
 using RoadTripGenerator.Infrastructure.ExternalUpload;
 using RoadTripGenerator.Infrastructure.Persistence;
 using RoadTripGenerator.Infrastructure.Persistence.DataAccess;
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ExceptionMiddleware>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddDbContext<RoadTripGeneratorDbContext>(
@@ -41,6 +44,7 @@ builder.Services.AddScoped<RoadTripResponseMapper>();
 builder.Services.AddScoped<IAddCountryUseCase, AddCountryUseCase>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
