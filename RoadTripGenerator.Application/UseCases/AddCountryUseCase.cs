@@ -8,7 +8,7 @@ using System.Text;
 
 namespace RoadTripGenerator.Application.UseCases
 {
-    public class AddCountryUseCase : IAddCountryUseCase
+    public class AddCountryUseCase
     {
         private readonly ICountryRepository _countryRepository;
         private readonly IRoadTripRepository _roadTripRepository;

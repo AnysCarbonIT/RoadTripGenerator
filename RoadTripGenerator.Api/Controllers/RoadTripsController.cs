@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using RoadTripGenerator.Api.DTO;
 using RoadTripGenerator.Api.Mappers;
-using RoadTripGenerator.Application.Interfaces;
+using RoadTripGenerator.Application.UseCases;
 
 namespace RoadTripGenerator.Api.Controllers
 {
@@ -10,18 +10,18 @@ namespace RoadTripGenerator.Api.Controllers
     [Route("api/roadtrip")]
     public class RoadTripsController : Controller
     {
-        private readonly IGetRoadTripUseCase _getRoadTripUseCase;
-        private readonly IReplaceRoadTripUseCase _replaceRoadTripUseCase;
-        private readonly IAddCountryUseCase _AddCountryUseCase;
-        private readonly IDeleteCountryUseCase _DeleteCountryUseCase;
+        private readonly GetRoadTripUseCase _getRoadTripUseCase;
+        private readonly ReplaceRoadTripUseCase _replaceRoadTripUseCase;
+        private readonly AddCountryUseCase _AddCountryUseCase;
+        private readonly DeleteCountryUseCase _DeleteCountryUseCase;
         private readonly RoadTripResponseMapper _mapper;
         private string UserId { get; set; } = string.Empty;
 
         public RoadTripsController(
-            IGetRoadTripUseCase getRoadTripUseCase,
-            IReplaceRoadTripUseCase replaceRoadTripUseCase,
-            IAddCountryUseCase addCountryUseCase,
-            IDeleteCountryUseCase deleteCountryUseCase,
+            GetRoadTripUseCase getRoadTripUseCase,
+            ReplaceRoadTripUseCase replaceRoadTripUseCase,
+            AddCountryUseCase addCountryUseCase,
+            DeleteCountryUseCase deleteCountryUseCase,
             RoadTripResponseMapper mapper)
         {
             _getRoadTripUseCase = getRoadTripUseCase;

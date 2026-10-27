@@ -3,7 +3,7 @@ using RoadTripGenerator.Domain.Models;
 
 namespace RoadTripGenerator.Application.UseCases
 {
-    public class GetCountriesUseCase : IGetCountriesUseCase
+    public class GetCountriesUseCase
     {
         private readonly ICountryRepository _countryRepository;
 

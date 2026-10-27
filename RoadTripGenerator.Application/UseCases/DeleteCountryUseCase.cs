@@ -4,7 +4,7 @@ using RoadTripGenerator.Application.Exceptions;
 
 namespace RoadTripGenerator.Application.UseCases
 {
-    public class DeleteCountryUseCase : IDeleteCountryUseCase
+    public class DeleteCountryUseCase
     {
         private readonly IRoadTripRepository _roadTripRepository;
 

@@ -33,15 +33,15 @@ builder.Services.AddHttpClient<ICountryApiClient, RestCountryClient>(client =>
 
 
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
-builder.Services.AddScoped<IGetCountriesUseCase, GetCountriesUseCase>();
+builder.Services.AddScoped<GetCountriesUseCase>();
 builder.Services.AddScoped<CountryResponseMapper>();
 builder.Services.AddScoped<CountryInitializationService>();
 builder.Services.AddScoped<IRoadTripRepository, RoadTripRepository>();
-builder.Services.AddScoped<IGetRoadTripUseCase, GetRoadTripUseCase>();
-builder.Services.AddScoped<IReplaceRoadTripUseCase, ReplaceRoadTripUseCase>();
-builder.Services.AddScoped<IDeleteCountryUseCase, DeleteCountryUseCase>();
+builder.Services.AddScoped<GetRoadTripUseCase>();
+builder.Services.AddScoped<ReplaceRoadTripUseCase>();
+builder.Services.AddScoped<DeleteCountryUseCase>();
 builder.Services.AddScoped<RoadTripResponseMapper>();
-builder.Services.AddScoped<IAddCountryUseCase, AddCountryUseCase>();
+builder.Services.AddScoped<AddCountryUseCase>();
 
 var app = builder.Build();
 app.UseExceptionHandler();

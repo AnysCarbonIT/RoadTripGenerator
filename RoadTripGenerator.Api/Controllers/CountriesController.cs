@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using RoadTripGenerator.Api.DTO;
 using RoadTripGenerator.Api.Mappers;
-using RoadTripGenerator.Application.Interfaces;
+using RoadTripGenerator.Application.UseCases;
 
 namespace RoadTripGenerator.Api.Controllers
 {
@@ -10,10 +10,10 @@ namespace RoadTripGenerator.Api.Controllers
     [Route("api/countries")]
     public class CountriesController : ControllerBase
     {
-        private readonly IGetCountriesUseCase _getCountriesUseCase;
+        private readonly GetCountriesUseCase _getCountriesUseCase;
         private readonly CountryResponseMapper _mapper;
 
-        public CountriesController(IGetCountriesUseCase getCountriesUseCase,CountryResponseMapper mapper)
+        public CountriesController(GetCountriesUseCase getCountriesUseCase,CountryResponseMapper mapper)
         {
             _getCountriesUseCase = getCountriesUseCase;
             _mapper = mapper;
